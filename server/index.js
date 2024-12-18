@@ -27,6 +27,29 @@ const getProductData = async (barcode) => {
   }
 };
 
-// Test with a sample barcode
-getProductData('737628064502');
+const searchProductByName = async (productName) => {
+  try {
+    const response = await axios.get(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${productName}&search_simple=1&action=process&json=1`);
+    const products = response.data.products;
 
+    if (products && products.length > 0) {
+      console.log(`Found ${products.length} products for "${productName}":`);
+      products.forEach(product => {
+        console.log(`Product Name: ${product.product_name}`);
+        console.log(`Nutritional Info:`, product.nutriments);
+        console.log('------------------------------------');
+      });
+    } else {
+      console.log(`No products found for "${productName}".`);
+    }
+  } catch (error) {
+    console.error('Error fetching product data:', error);
+  }
+};
+
+// Test with a sample barcode
+//getProductData('737628064502');
+
+
+// Test with a sample product name
+searchProductByName('banana');
